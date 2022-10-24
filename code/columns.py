@@ -11,6 +11,7 @@ from xlwt import Workbook
 import io
 
 
+# dealing with crimes in separate folders
 crimes = ['Furto Celular',"Furto Veículos","Registros de Obitos IML","Roubo Celular","Roubo Veículos"]
 years = [2019,2020,2021,2022]
 
@@ -60,3 +61,31 @@ for c in crimes:
             columnsDf[f] = list(df.columns)
 
     columnsDf.to_excel(os.getcwd()+f"/../data/{c}/columns{c.replace(' ','')}.xlsx",index=False)
+
+
+dealing with crimes in single files
+
+
+singleFileCrimesPath = os.getcwd()+f"/../data/"
+
+singleFiles = [f for f in os.listdir(singleFileCrimesPath) if os.path.isfile(singleFileCrimesPath+f) and f.split(".")[1] == "xlsx" and f[:7]!='columns']
+
+
+for sf in singleFiles:
+    print(sf)
+    columnsDf = pd.DataFrame()
+
+    f = pd.ExcelFile(singleFileCrimesPath+sf)
+    worksheets = f.sheet_names
+    
+    for ws in worksheets:
+        print("     ",ws)
+        df = f.parse(ws)
+        print(list(df.columns))
+        dfTemp = pd.DataFrame()
+        dfTemp[f'worksheet_{ws}'] = list(df.columns)
+        print(dfTemp)
+        columnsDf = pd.concat([columnsDf, dfTemp], ignore_index=True, axis=1)
+        
+    columnsDf.columns = worksheets
+    columnsDf.to_excel(os.getcwd()+f"/../data/columns_{sf}",index=False)
