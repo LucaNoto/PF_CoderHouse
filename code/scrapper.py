@@ -3,7 +3,7 @@ import time
 
 
 def browser_config(url):
-    driver = webdriver.Chrome('./chromedriver')
+    driver = webdriver.Chrome('chromedriver')
     driver.set_window_position(0, 0, windowHandle='current')
     driver.get(url)
 
